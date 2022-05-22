@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import DataTable from "../assets/DataTable";
+import Spinner from "../assets/Spinner";
 const HomeContainer = styled.div`
   width: 100%;
   height: calc(100vh - 70px);
@@ -23,7 +24,6 @@ const SideBarUL = styled.ul`
 `;
 const SideBarLI = styled.li`
   color: #fff;
-  cursor: pointer;
   padding: 1rem 0;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -50,6 +50,7 @@ const FormDropDown = styled.select`
   padding: 0.5rem 0.5rem;
   width: 100%;
   outline: none;
+  margin-top: 1rem;
 `;
 const FormOption = styled.option`
   margin-top: 0.5rem;
@@ -59,6 +60,14 @@ const FormWrapper = styled.div`
   padding: 1rem;
 `;
 
+const ButtonContainer = styled.div`
+  width: 100px;
+  margin: 0 auto;
+`;
+const Button = styled.button`
+  width: 100%;
+  cursor: pointer;
+`;
 export default function HomePage() {
   // functions
 
@@ -85,10 +94,8 @@ export default function HomePage() {
       })
     ),
   ];
-
-  const [selectExp, setSelectExp] = useState(data.exp);
+  const [selectExp, setSelectExp] = useState("");
   const [selectSalary, setSelectSalary] = useState("");
-
   const getEmployees = async () => {
     try {
       setLoading(true);
@@ -103,7 +110,7 @@ export default function HomePage() {
   useEffect(() => {
     getEmployees();
     filterDataByExp(selectExp);
-  filterDataBySalary(selectSalary);
+    filterDataBySalary(selectSalary);
   }, [selectExp, selectSalary]);
 
   const filterDataByExp = async (input) => {
@@ -113,7 +120,6 @@ export default function HomePage() {
         "http://localhost:5000/api/employees/search/exp?exp=" + input
       );
       setData(res.data.employees);
-
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -133,37 +139,50 @@ export default function HomePage() {
     }
   };
 
+
+  const reset = () => {
+    getEmployees();
+  };
+
   return (
     <HomeContainer>
       <SideBar>
         <SideBarUL>
           <SideBarLI>Employers</SideBarLI>
-
+          <ButtonContainer>
+            <Button
+              onClick={() => {
+                reset();
+              }}
+            >
+              Reset
+            </Button>
+          </ButtonContainer>
           <Form>
             <FormWrapper>
               <FormLabel>Filter by Experience</FormLabel>
-              <br />
+
               <FormDropDown
                 onChange={(e) => {
                   setSelectExp(e.target.value);
                 }}
               >
-                {uniqueExp.map((item) => (
-                  <FormOption>{item}</FormOption>
+                {uniqueExp.map((item, i) => (
+                  <FormOption key={i}>{item}</FormOption>
                 ))}
               </FormDropDown>
             </FormWrapper>
 
             <FormWrapper>
               <FormLabel>Filter by Salary</FormLabel>
-              <br />
+
               <FormDropDown
                 onChange={(e) => {
                   setSelectSalary(e.target.value);
                 }}
               >
-                {uniqueSalary.map((item) => (
-                  <FormOption>{item}</FormOption>
+                {uniqueSalary.map((item, i) => (
+                  <FormOption key={i}>{item}</FormOption>
                 ))}
               </FormDropDown>
             </FormWrapper>
@@ -171,7 +190,7 @@ export default function HomePage() {
         </SideBarUL>
       </SideBar>
       <DataContainer>
-        {loading && <h1>LOADING...</h1>}
+        {loading && <Spinner />}
 
         <DataRow>
           {data && data.length
