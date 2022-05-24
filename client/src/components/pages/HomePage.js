@@ -109,9 +109,10 @@ export default function HomePage() {
 
   useEffect(() => {
     getEmployees();
-    filterDataByExp(selectExp);
-    filterDataBySalary(selectSalary);
-  }, [selectExp, selectSalary]);
+
+    //filterDataByExp(selectExp);
+   // filterDataBySalary(selectSalary);
+  }, []);
 
   const filterDataByExp = async (input) => {
     try {
@@ -165,6 +166,7 @@ export default function HomePage() {
               <FormDropDown
                 onChange={(e) => {
                   setSelectExp(e.target.value);
+                  filterDataByExp(selectExp)
                 }}
               >
                 {uniqueExp.map((item, i) => (
@@ -179,6 +181,7 @@ export default function HomePage() {
               <FormDropDown
                 onChange={(e) => {
                   setSelectSalary(e.target.value);
+                  filterDataBySalary(selectSalary)
                 }}
               >
                 {uniqueSalary.map((item, i) => (
