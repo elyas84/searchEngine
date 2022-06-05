@@ -1,4 +1,3 @@
-const { query } = require("express");
 const EM = require("../models/employesModel");
 
 //@route /api/employees/
@@ -6,6 +5,7 @@ const EM = require("../models/employesModel");
 //@access public
 
 exports.getEmployees = async (req, res) => {
+  // db.myColl.aggregate( [ { $match: { category: "cafe" } } ] )
   try {
     const employees = await EM.find();
     if (employees && employees.length === 0) {
@@ -14,7 +14,6 @@ exports.getEmployees = async (req, res) => {
       });
     } else {
       return res.status(200).json({
-        count: employees.length,
         employees: employees,
       });
     }
@@ -31,7 +30,7 @@ exports.getEmployees = async (req, res) => {
 //@access public
 
 exports.newEmployee = async (req, res) => {
-  const { name, title, avatar, exp, salary, gender } = req.body;
+  const { name, job_Id, exp, salary, gender } = req.body;
   try {
     let newEmployee = await EM.findOne({ name });
     if (newEmployee) {
@@ -41,8 +40,7 @@ exports.newEmployee = async (req, res) => {
     } else {
       newEmployee = new EM({
         name,
-        title,
-        avatar,
+        job_Id,
         exp,
         salary,
         gender,
@@ -72,11 +70,10 @@ exports.editEmployeeInfo = async (req, res) => {
       });
     } else {
       emToEdit.name = req.body.name || emToEdit.name;
-      emToEdit.title = req.body.title || emToEdit.title;
+      emToEdit.job_Id = req.body.job_Id || emToEdit.job_Id;
       emToEdit.exp = req.body.exp || emToEdit.exp;
       emToEdit.salary = req.body.salary || emToEdit.salary;
-      emToEdit.avatar = req.body.avatar || emToEdit.avatar;
-
+      emToEdit.gender = req.body.gender || emToEdit.gender;
       emToEdit.save();
 
       res.status(200).json(emToEdit);
@@ -137,28 +134,28 @@ exports.filterByGender = async (req, res) => {
   }
 };
 
-exports.filterByName = async (req, res) => {
-  try {
-    // await MyModel.find({ name: 'john', age: { $gte: 18 } }).exec();
-    const emp = await EM.find({ name: req.query.name }).exec();
+// exports.filterByName = async (req, res) => {
+//   try {
+//     // await MyModel.find({ name: 'john', age: { $gte: 18 } }).exec();
+//     const emp = await EM.find({ name: req.query.name }).exec();
 
-    if (emp && emp.length === 0) {
-      return res.status(400).json({
-        message: "There is no data",
-      });
-    } else {
-      res.status(200).json({
-        count: emp.length,
-        employees: emp,
-      });
-    }
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      message: error,
-    });
-  }
-};
+//     if (emp && emp.length === 0) {
+//       return res.status(400).json({
+//         message: "There is no data",
+//       });
+//     } else {
+//       res.status(200).json({
+//         count: emp.length,
+//         employees: emp,
+//       });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({
+//       message: error,
+//     });
+//   }
+// };
 
 exports.filterByExp = async (req, res) => {
   try {
@@ -193,7 +190,6 @@ exports.filterBySalary = async (req, res) => {
       });
     } else {
       res.status(200).json({
-        count: emp.length,
         employees: emp,
       });
     }
@@ -205,10 +201,10 @@ exports.filterBySalary = async (req, res) => {
   }
 };
 
-exports.filterByJobTitle = async (req, res) => {
+exports.filterByJob_id = async (req, res) => {
   try {
     // await MyModel.find({ name: 'john', age: { $gte: 18 } }).exec();
-    const emp = await EM.find({ title: req.query.title }).exec();
+    const emp = await EM.find({ job_Id: req.query.job_Id }).exec();
 
     if (emp && emp.length === 0) {
       return res.status(400).json({

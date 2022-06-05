@@ -7,15 +7,11 @@ const emloyeeSchema = new mongoose.Schema({
     max: 30,
   },
 
-  title: {
+  job_Id: {
     type: String,
     required: true,
     min: 10,
     max: 100,
-  },
-  avatar: {
-    type: String,
-    default: "",
   },
   exp: {
     type: String,
@@ -32,7 +28,6 @@ const emloyeeSchema = new mongoose.Schema({
   gender: {
     type: String,
     required: true,
-  default: "other"
   },
 });
 

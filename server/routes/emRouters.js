@@ -12,11 +12,9 @@ router.route("/edit/:id").put(emController.editEmployeeInfo);
 router.route("/delete/:id").delete(emController.deleteEmployee);
 
 // filter  routes
-
 router.route("/search/gender").get(emController.filterByGender);
-router.route("/search/name").get(emController.filterByName);
 router.route("/search/exp").get(emController.filterByExp);
 router.route("/search/salary").get(emController.filterBySalary);
-router.route("/search/jobtitle").get(emController.filterByJobTitle);
+router.route("/search/job_id").get(emController.filterByJob_id);
 
 module.exports = router;

@@ -1,208 +1,51 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import axios from "axios";
-import DataTable from "../assets/DataTable";
-import Spinner from "../assets/Spinner";
+import { API_desc } from "../../data";
+import ApiDesc from "../assets/ApiDesc";
 const HomeContainer = styled.div`
   width: 100%;
-  height: calc(100vh - 70px);
   background-color: #fff;
-  display: flex;
 `;
-const SideBar = styled.div`
-  flex: 0.5;
-  width: 100%;
-  height: 100%;
-  background-color: #333333;
-`;
-
-const SideBarUL = styled.ul`
-  width: 100%;
-  height: 100%;
-  list-style: none;
+const IntroSection = styled.div`
+  padding: 3rem 0;
+  font-size: 3rem;
+  text-transform: uppercase;
   text-align: center;
 `;
-const SideBarLI = styled.li`
-  color: #fff;
-  padding: 1rem 0;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-`;
-
-const DataContainer = styled.div`
-  flex: 2;
+const IntroTxt = styled.div`
   width: 100%;
-  height: 100%;
-  padding: 2rem;
-`;
-
-const DataRow = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 2rem;
-`;
-
-const Form = styled.form``;
-const FormLabel = styled.label`
-  color: #fff;
-`;
-const FormDropDown = styled.select`
-  padding: 0.5rem 0.5rem;
-  width: 100%;
-  outline: none;
-  margin-top: 1rem;
-`;
-const FormOption = styled.option`
-  margin-top: 0.5rem;
-`;
-
-const FormWrapper = styled.div`
+  background-color: lightgray;
+  color: gray;
   padding: 1rem;
 `;
-
-const ButtonContainer = styled.div`
-  width: 100px;
-  margin: 0 auto;
-`;
-const Button = styled.button`
+const HomeBodyTitle = styled.div`
+  padding: 1rem 0;
   width: 100%;
-  cursor: pointer;
 `;
+const APIContainer = styled.div``;
+
+const HomeBody = styled.div``;
+const Span = styled.span`
+font-weight: bolder;
+padding: 1rem 0;
+font-style: italic;
+`
 export default function HomePage() {
-  // functions
-
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
-  const getUniqueExp = data.map((item) => {
-    return item.exp;
-  });
-  const uniqueExp = [
-    ...new Set(
-      getUniqueExp.sort((a, b) => {
-        return a - b;
-      })
-    ),
-  ];
-
-  const getUniqueSalary = data.map((item) => {
-    return item.salary;
-  });
-  const uniqueSalary = [
-    ...new Set(
-      getUniqueSalary.sort((a, b) => {
-        return a - b;
-      })
-    ),
-  ];
-  const [selectExp, setSelectExp] = useState("");
-  const [selectSalary, setSelectSalary] = useState("");
-  const getEmployees = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get("http://localhost:5000/api/employees");
-      setData(res.data.employees);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    getEmployees();
-
-    //filterDataByExp(selectExp);
-   // filterDataBySalary(selectSalary);
-  }, []);
-
-  const filterDataByExp = async (input) => {
-    try {
-      setLoading(true);
-      const res = await axios.get(
-        "http://localhost:5000/api/employees/search/exp?exp=" + input
-      );
-      setData(res.data.employees);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const filterDataBySalary = async (input) => {
-    try {
-      setLoading(true);
-      const res = await axios.get(
-        "http://localhost:5000/api/employees/search/salary?salary=" + input
-      );
-      setData(res.data.employees);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-
-  const reset = () => {
-    getEmployees();
-  };
-
   return (
     <HomeContainer>
-      <SideBar>
-        <SideBarUL>
-          <SideBarLI>Employers</SideBarLI>
-          <ButtonContainer>
-            <Button
-              onClick={() => {
-                reset();
-              }}
-            >
-              Reset
-            </Button>
-          </ButtonContainer>
-          <Form>
-            <FormWrapper>
-              <FormLabel>Filter by Experience</FormLabel>
-
-              <FormDropDown
-                onChange={(e) => {
-                  setSelectExp(e.target.value);
-                  filterDataByExp(selectExp)
-                }}
-              >
-                {uniqueExp.map((item, i) => (
-                  <FormOption key={i}>{item}</FormOption>
-                ))}
-              </FormDropDown>
-            </FormWrapper>
-
-            <FormWrapper>
-              <FormLabel>Filter by Salary</FormLabel>
-
-              <FormDropDown
-                onChange={(e) => {
-                  setSelectSalary(e.target.value);
-                  filterDataBySalary(selectSalary)
-                }}
-              >
-                {uniqueSalary.map((item, i) => (
-                  <FormOption key={i}>{item}</FormOption>
-                ))}
-              </FormDropDown>
-            </FormWrapper>
-          </Form>
-        </SideBarUL>
-      </SideBar>
-      <DataContainer>
-        {loading && <Spinner />}
-
-        <DataRow>
-          {data && data.length
-            ? data.map((element, id) => (
-                <DataTable key={id} element={element} />
-              ))
-            : null}
-        </DataRow>
-      </DataContainer>
+      <IntroSection>custom API</IntroSection>
+      <IntroTxt>
+        This is a completly custome API and you don't need to sucbcribe for
+        sending request to the SERVER
+      </IntroTxt>
+      <HomeBody>
+        <HomeBodyTitle>Documentation <Span>baseUri: http://localhost:5000/api</Span> </HomeBodyTitle>
+        <APIContainer>
+          {API_desc.map((desc, i) => (
+            <ApiDesc key={i} desc={desc} />
+          ))}
+        </APIContainer>
+      </HomeBody>
     </HomeContainer>
   );
 }
